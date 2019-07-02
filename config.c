@@ -51,6 +51,12 @@ struct mode mode[] = {
 			{
 				.key = "e",
 				.command = "exit"
+			},{
+				.key = "r",
+				.command = "restart"
+			},{
+				.key = "w",
+				.command = "reload"
 			}
 		}
 	},{
