@@ -22,7 +22,7 @@ struct sym global[] = {
 		.command = "exec terminator"
 	},{
 		.mod = 1,
-		.key = "space",
+		.key = "Shift+space",
 		.command = "exec rofi -show run"
 	},{
 		.mod = 1,
@@ -50,7 +50,7 @@ struct mode mode[] = {
 		.sym = {
 			{
 				.key = "e",
-				.command = "exit"
+				.command = "exec killall mozc_server; exit"
 			},{
 				.key = "r",
 				.command = "restart"
@@ -219,15 +219,15 @@ void set_workspace(){
 	for(int i = 0; i < sizeof mode / sizeof mode[0]; ++i) if(!strcmp(mode[i].name, "workspace")){
 		for(int j = 0; j < 10; ++j){
 			sprintf(mode[i].sym[j * 2].key, "%d", j);
-			sprintf(mode[i].sym[j * 2].command, "workspace %d", j);
+			sprintf(mode[i].sym[j * 2].command, "workspace %d; mode \"default\"", j);
 			sprintf(mode[i].sym[j * 2 + 1].key, "Shift+%d", j);
-			sprintf(mode[i].sym[j * 2 + 1].command, "move container to workspace %d", j);
+			sprintf(mode[i].sym[j * 2 + 1].command, "move container to workspace %d; workspace %d; mode \"default\"", j, j);
 		}
 		for(int j = 0; j < 26; ++j){
 			sprintf(mode[i].sym[j * 2 + 20].key, "%c", 'A' + j);
-			sprintf(mode[i].sym[j * 2 + 20].command, "workspace %c", 'A' + j);
+			sprintf(mode[i].sym[j * 2 + 20].command, "workspace %c; mode \"default\"", 'A' + j);
 			sprintf(mode[i].sym[j * 2 + 21].key, "Shift+%c", 'A' + j);
-			sprintf(mode[i].sym[j * 2 + 21].command, "move container to workspace %c", 'A' + j);
+			sprintf(mode[i].sym[j * 2 + 21].command, "move container to workspace %c; workspace %c; mode \"default\"", 'A' + j, 'A' + j);
 		}
 	}
 }
@@ -243,6 +243,7 @@ void print_mode(struct mode *m){
 int main(){
 	for(int i = 0; i < sizeof global / sizeof global[0]; ++i) bindsym(global + i);
 	printf("bar{\nstatus_command i3status\n}\n");
+	printf("default_border pixel 1\n");
 	set_workspace();
 	for(int i = 0; i < sizeof mode / sizeof mode[0]; ++i) if(mode[i].description) desc(mode + i);
 	for(int i = 0; i < sizeof mode / sizeof mode[0]; ++i) switch_to_mode(mode + i);
