@@ -5,6 +5,7 @@ const char mod[] = "Mod4";
 
 struct sym{
 	_Bool mod;
+	_Bool def;
 	char key[100];
 	char command[100];
 };
@@ -12,7 +13,9 @@ struct sym{
 void bindsym(struct sym *s){
 	printf("bindsym ");
 	if(s->mod) printf("%s+", mod);
-	printf("%s %s\n", s->key, s->command);
+	printf("%s %s", s->key, s->command);
+	if(s->def) printf("; mode \"default\"");
+	putchar('\n');
 }
 
 struct sym global[] = {
@@ -65,12 +68,15 @@ struct mode mode[] = {
 		.description = 1,
 		.sym = {
 			{
+				.def = 1,
 				.key = "v",
 				.command = "split vertical"
 			},{
+				.def = 1,
 				.key = "h",
 				.command = "split horizontal"
 			},{
+				.def = 1,
 				.key = "t",
 				.command = "split toggle"
 			}
@@ -81,24 +87,31 @@ struct mode mode[] = {
 		.description = 1,
 		.sym = {
 			{
+				.def = 1,
 				.key = "d",
 				.command = "layout default"
 			},{
+				.def = 1,
 				.key = "t",
 				.command = "layout tabbed"
 			},{
+				.def = 1,
 				.key = "s",
 				.command = "layout stacking"
 			},{
+				.def = 1,
 				.key = "v",
 				.command = "layout splitv"
 			},{
+				.def = 1,
 				.key = "h",
 				.command = "layout splith"
 			},{
+				.def = 1,
 				.key = "f",
 				.command = "fullscreen toggle"
 			},{
+				.def = 1,
 				.key = "Shift+f",
 				.command = "floating toggle"
 			}
@@ -109,21 +122,27 @@ struct mode mode[] = {
 		.description = 1,
 		.sym = {
 			{
+				.def = 1,
 				.key = "h",
 				.command = "focus left"
 			},{
+				.def = 1,
 				.key = "j",
 				.command = "focus down"
 			},{
+				.def = 1,
 				.key = "k",
 				.command = "focus up"
 			},{
+				.def = 1,
 				.key = "l",
 				.command = "focus right"
 			},{
+				.def = 1,
 				.key = "p",
 				.command = "focus parent"
 			},{
+				.def = 1,
 				.key = "f",
 				.command = "focus mode_toggle"
 			}
@@ -134,21 +153,27 @@ struct mode mode[] = {
 		.description = 1,
 		.sym = {
 			{
+				.def = 1,
 				.key = "h",
 				.command = "move left"
 			},{
+				.def = 1,
 				.key = "j",
 				.command = "move down"
 			},{
+				.def = 1,
 				.key = "k",
 				.command = "move up"
 			},{
+				.def = 1,
 				.key = "l",
 				.command = "move right"
 			},{
+				.def = 1,
 				.key = "c",
 				.command = "move absolute position center"
 			},{
+				.def = 1,
 				.key = "m",
 				.command = "move position mouse"
 			}
@@ -159,12 +184,15 @@ struct mode mode[] = {
 		.description = 1,
 		.sym = {
 			{
+				.def = 1,
 				.key = "e",
 				.command = "sticky enable"
 			},{
+				.def = 1,
 				.key = "d",
 				.command = "sticky disable"
 			},{
+				.def = 1,
 				.key = "t",
 				.command = "sticky toggle"
 			}
@@ -175,15 +203,19 @@ struct mode mode[] = {
 		.description = 1,
 		.sym = {
 			{
+				.def = 1,
 				.key = "h",
 				.command = "resize shrink width"
 			},{
+				.def = 1,
 				.key = "j",
 				.command = "resize grow height"
 			},{
+				.def = 1,
 				.key = "k",
 				.command = "resize shrink height"
 			},{
+				.def = 1,
 				.key = "l",
 				.command = "resize grow width"
 			}
@@ -194,12 +226,15 @@ struct mode mode[] = {
 		.description = 1,
 		.sym = {
 			{
+				.def = 1,
 				.key = "n",
 				.command = "border normal"
 			},{
+				.def = 1,
 				.key = "p",
 				.command = "border pixel"
 			},{
+				.def = 1,
 				.key = "Shift+n",
 				.command = "border none"
 			}
