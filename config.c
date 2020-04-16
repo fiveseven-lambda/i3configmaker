@@ -1,286 +1,248 @@
 #include <stdio.h>
-#include <string.h>
 
-const char mod[] = "Mod4";
+#define MOD "Mod4"
 
-struct sym{
-	_Bool mod;
-	_Bool def;
+struct bind{
 	char key[100];
 	char command[100];
 };
 
-void bindsym(struct sym *s){
-	printf("bindsym ");
-	if(s->mod) printf("%s+", mod);
-	printf("%s %s", s->key, s->command);
-	if(s->def) printf("; mode \"default\"");
-	putchar('\n');
-}
-
-struct sym global[] = {
+struct bind global[] = {
 	{
-		.mod = 1,
-		.key = "Return",
+		.key = MOD "+Return",
 		.command = "exec terminator"
-	},{
-		.mod = 1,
-		.key = "Shift+space",
+	}, {
+		.key = MOD "+Shift+space",
 		.command = "exec rofi -show run"
-	},{
-		.mod = 1,
-		.key = "Delete",
+	}, {
+		.key = MOD "+Delete",
 		.command = "kill"
+	}, {
+		.key = MOD "+Shift+f",
+		.command = "fullscreen toggle"
 	}
 };
 
 struct mode{
-	char name[1000];
+	char name[100];
 	char key[100];
-	_Bool description;
-	struct sym sym[100];
-};
-
-void desc(struct mode *m){
-	for(int i = 0; m->sym[i].key[0]; ++i) sprintf(m->name + strlen(m->name), " [%s : %s]", m->sym[i].key, m->sym[i].command);
-}
-
-struct mode mode[] = {
+	_Bool def;
+	_Bool border;
+	struct bind bind[100];
+} mode[] = {
 	{
-		.name = "exit",
-		.key = "Shift+e",
-		.description = 1,
-		.sym = {
+		.name = "exit [e: exit] [r: restart] [w: reload]",
+		.key = MOD "+Shift+e",
+		.def = 0,
+		.border = 0,
+		.bind = {
 			{
 				.key = "e",
 				.command = "exec killall mozc_server; exit"
-			},{
+			}, {
 				.key = "r",
 				.command = "restart"
-			},{
+			}, {
 				.key = "w",
 				.command = "reload"
-			}
+			}, { .key = "" }
 		}
-	},{
-		.name = "split",
-		.key = "s",
-		.description = 1,
-		.sym = {
+	}, {
+		.name = "layout [h: splith] [v: splitv] [t: tabbed] [s: stacking] [f: floating toggle]",
+		.key = MOD "+l",
+		.def = 1,
+		.border = 0,
+		.bind = {
 			{
-				.def = 1,
-				.key = "v",
-				.command = "split vertical"
-			},{
-				.def = 1,
-				.key = "h",
-				.command = "split horizontal"
-			},{
-				.def = 1,
-				.key = "t",
-				.command = "split toggle"
-			}
-		}
-	},{
-		.name = "layout",
-		.key = "l",
-		.description = 1,
-		.sym = {
-			{
-				.def = 1,
-				.key = "d",
-				.command = "layout default"
-			},{
-				.def = 1,
-				.key = "t",
-				.command = "layout tabbed"
-			},{
-				.def = 1,
-				.key = "s",
-				.command = "layout stacking"
-			},{
-				.def = 1,
-				.key = "v",
-				.command = "layout splitv"
-			},{
-				.def = 1,
 				.key = "h",
 				.command = "layout splith"
-			},{
-				.def = 1,
+			}, {
+				.key = "v",
+				.command = "layout splitv"
+			}, {
+				.key = "t",
+				.command = "layout tabbed"
+			}, {
+				.key = "s",
+				.command = "layout stacking"
+			}, {
 				.key = "f",
-				.command = "fullscreen toggle"
-			},{
-				.def = 1,
-				.key = "Shift+f",
 				.command = "floating toggle"
-			}
+			}, { .key = "" }
 		}
-	},{
-		.name = "focus",
-		.key = "f",
-		.description = 1,
-		.sym = {
+	}, {
+		.name = "split [h: horizontal] [v: vertical]",
+		.key = MOD "+s",
+		.def = 1,
+		.border = 0,
+		.bind = {
 			{
-				.def = 1,
 				.key = "h",
-				.command = "focus left"
-			},{
-				.def = 1,
-				.key = "j",
-				.command = "focus down"
-			},{
-				.def = 1,
-				.key = "k",
-				.command = "focus up"
-			},{
-				.def = 1,
-				.key = "l",
-				.command = "focus right"
-			},{
-				.def = 1,
-				.key = "p",
-				.command = "focus parent"
-			},{
-				.def = 1,
-				.key = "f",
-				.command = "focus mode_toggle"
-			}
+				.command = "split horizontal"
+			}, {
+				.key = "v",
+				.command = "split vertical"
+			}, { .key = "" }
 		}
-	},{
-		.name = "move",
-		.key = "m",
-		.description = 1,
-		.sym = {
+	}, {
+		.name = "focus [h: left] [j: down] [k: up] [l: right] [p: parent] [c: child] [f: floating]",
+		.key = MOD "+f",
+		.def = 0,
+		.border = 1,
+		.bind = {
 			{
-				.def = 1,
+				.key = "h",
+				.command = "border pixel 1; focus left; border normal"
+			}, {
+				.key = "j",
+				.command = "border pixel 1; focus down; border normal"
+			}, {
+				.key = "k",
+				.command = "border pixel 1; focus up; border normal"
+			}, {
+				.key = "l",
+				.command = "border pixel 1; focus right; border normal"
+			}, {
+				.key = "p",
+				.command = "border pixel 1; focus parent"
+			}, {
+				.key = "c",
+				.command = "focus child; border normal"
+			}, {
+				.key = "f",
+				.command = "border pixel 1; focus mode_toggle; border normal"
+			}, { .key = "" }
+		}
+	}, {
+		.name = "move [h: left] [j: down] [k: up] [l: right] [c: center] [m: mouse]",
+		.key = MOD "+m",
+		.def = 0,
+		.border = 1,
+		.bind = {
+			{
 				.key = "h",
 				.command = "move left"
-			},{
-				.def = 1,
+			}, {
+				.key = "Shift+h",
+				.command = "move left 50 px"
+			}, {
 				.key = "j",
 				.command = "move down"
-			},{
-				.def = 1,
+			}, {
+				.key = "Shift+j",
+				.command = "move down 50 px"
+			}, {
 				.key = "k",
 				.command = "move up"
-			},{
-				.def = 1,
+			}, {
+				.key = "Shift+k",
+				.command = "move up 50 px"
+			}, {
 				.key = "l",
 				.command = "move right"
-			},{
-				.def = 1,
+			}, {
+				.key = "Shift+l",
+				.command = "move right 50 px"
+			}, {
 				.key = "c",
 				.command = "move absolute position center"
-			},{
-				.def = 1,
+			}, {
 				.key = "m",
 				.command = "move position mouse"
-			}
+			}, { .key = "" }
 		}
-	},{
-		.name = "sticky",
-		.key = "Shift+s",
-		.description = 1,
-		.sym = {
+	}, {
+		.name = "resize [h: shrink width] [j: grow height] [k: shrink height] [l: grow width]",
+		.key = MOD "+r",
+		.def = 0,
+		.border = 1,
+		.bind = {
 			{
-				.def = 1,
-				.key = "e",
-				.command = "sticky enable"
-			},{
-				.def = 1,
-				.key = "d",
-				.command = "sticky disable"
-			},{
-				.def = 1,
-				.key = "t",
-				.command = "sticky toggle"
-			}
-		}
-	},{
-		.name = "resize",
-		.key = "r",
-		.description = 1,
-		.sym = {
-			{
-				.def = 1,
 				.key = "h",
 				.command = "resize shrink width"
-			},{
-				.def = 1,
+			}, {
+				.key = "Shift+h",
+				.command = "resize shrink width 50 px"
+			}, {
 				.key = "j",
 				.command = "resize grow height"
-			},{
-				.def = 1,
+			}, {
+				.key = "Shift+j",
+				.command = "resize grow height 50 px"
+			}, {
 				.key = "k",
 				.command = "resize shrink height"
-			},{
-				.def = 1,
+			}, {
+				.key = "Shift+k",
+				.command = "resize shrink height 50 px"
+			}, {
 				.key = "l",
 				.command = "resize grow width"
-			}
+			}, {
+				.key = "Shift+l",
+				.command = "resize grow width 50 px"
+			}, { .key = "" }
 		}
-	},{
-		.name = "border",
-		.key = "b",
-		.description = 1,
-		.sym = {
-			{
-				.def = 1,
-				.key = "n",
-				.command = "border normal"
-			},{
-				.def = 1,
-				.key = "p",
-				.command = "border pixel"
-			},{
-				.def = 1,
-				.key = "Shift+n",
-				.command = "border none"
-			}
-		}
-	},{
+	}, {
 		.name = "workspace",
-		.key = "w",
-		.description = 0,
+		.key = MOD "+w",
+		.def = 1,
+		.border = 0,
+		.bind = {
+			{ .key = "" }
+		}
 	}
 };
 
-void switch_to_mode(struct mode *m){
-	printf("bindsym %s+%s mode \"%s\"\n", mod, m->key, m->name);
-}
-
-void set_workspace(){
-	for(int i = 0; i < sizeof mode / sizeof mode[0]; ++i) if(!strcmp(mode[i].name, "workspace")){
-		for(int j = 0; j < 10; ++j){
-			sprintf(mode[i].sym[j * 2].key, "%d", j);
-			sprintf(mode[i].sym[j * 2].command, "workspace %d; mode \"default\"", j);
-			sprintf(mode[i].sym[j * 2 + 1].key, "Shift+%d", j);
-			sprintf(mode[i].sym[j * 2 + 1].command, "move container to workspace %d; workspace %d; mode \"default\"", j, j);
-		}
-		for(int j = 0; j < 26; ++j){
-			sprintf(mode[i].sym[j * 2 + 20].key, "%c", 'A' + j);
-			sprintf(mode[i].sym[j * 2 + 20].command, "workspace %c; mode \"default\"", 'A' + j);
-			sprintf(mode[i].sym[j * 2 + 21].key, "Shift+%c", 'A' + j);
-			sprintf(mode[i].sym[j * 2 + 21].command, "move container to workspace %c; workspace %c; mode \"default\"", 'A' + j, 'A' + j);
-		}
-	}
-}
-
-void print_mode(struct mode *m){
-	printf("mode \"%s\"{\nbindsym Return mode \"default\"\n", m->name);
-	for(int i = 0; i < sizeof global / sizeof global[0]; ++i) bindsym(global + i);
-	for(int i = 0; i < sizeof mode / sizeof mode[0]; ++i) if(mode + i != m) switch_to_mode(mode + i);
-	for(int i = 0; m->sym[i].key[0]; ++i) bindsym(m->sym + i);
-	printf("}\n");
-}
-
 int main(){
-	for(int i = 0; i < sizeof global / sizeof global[0]; ++i) bindsym(global + i);
-	printf("bar{\nstatus_command i3status\n}\n");
-	printf("default_border pixel 1\n");
-	set_workspace();
-	for(int i = 0; i < sizeof mode / sizeof mode[0]; ++i) if(mode[i].description) desc(mode + i);
-	for(int i = 0; i < sizeof mode / sizeof mode[0]; ++i) switch_to_mode(mode + i);
-	for(int i = 0; i < sizeof mode / sizeof mode[0]; ++i) print_mode(mode + i);
+	printf("bar{\nstatus_command i3status\n}\ndefault_border pixel 1\n");
+	for(int i = 0; i < sizeof global / sizeof global[0]; ++i){
+		printf("bindsym %s %s\n", global[i].key, global[i].command);
+	}
+	for(int i = 0; i < sizeof mode / sizeof mode[0]; ++i){
+		printf("bindsym %s ", mode[i].key);
+		if(mode[i].border) printf("border normal; ");
+		printf("mode \"%s\"\n", mode[i].name);
+	}
+	for(int i = 0; i < sizeof mode / sizeof mode[0]; ++i){
+		printf("mode \"%s\"{\n", mode[i].name);
+		printf("\tbindsym Return ");
+		if(mode[i].border) printf("border pixel 1; ");
+		printf("mode \"default\"\n");
+		for(int j = 0; mode[i].bind[j].key[0]; ++j){
+			printf("\tbindsym %s %s", mode[i].bind[j].key, mode[i].bind[j].command);
+			if(mode[i].def) printf("; mode \"default\"");
+			printf("\n");
+		}
+		if(!mode[i].bind[0].key[0]){
+			for(int j = 0; j <= 9; ++j){
+				printf("\tbindsym %d workspace %d", j, j);
+				if(mode[i].def) printf("; mode \"default\"");
+				printf("\n");
+				printf("\tbindsym Shift+%d move container to workspace %d; workspace %d", j, j, j);
+				if(mode[i].def) printf("; mode \"default\"");
+				printf("\n");
+			}
+			for(char j = 'A'; j <= 'Z'; ++j){
+				printf("\tbindsym %c workspace %c", j, j);
+				if(mode[i].def) printf("; mode \"default\"");
+				printf("\n");
+				printf("\tbindsym Shift+%c move container to workspace %c; workspace %c", j, j, j);
+				if(mode[i].def) printf("; mode \"default\"");
+				printf("\n");
+			}
+		}
+		for(int j = 0; j < sizeof mode / sizeof mode[0]; ++j){
+			if(i != j){
+				printf("\tbindsym %s ", mode[j].key);
+				if(!mode[i].border){
+					if(mode[j].border) printf("border normal; ");
+				}else{
+					if(!mode[j].border) printf("border pixel 1; ");
+				}
+				printf("mode \"%s\"\n", mode[j].name);
+			}
+		}
+		printf("}\n");
+	}
 }
