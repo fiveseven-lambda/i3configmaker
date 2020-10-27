@@ -20,6 +20,9 @@ struct bind global[] = {
 	}, {
 		.key = MOD "+Shift+f",
 		.command = "fullscreen toggle"
+	}, {
+		.key = MOD "+Print",
+		.command = "exec gm import -window root $(date \"+screenshot/%Y%m%d-%H%M%S.png\")"
 	}
 };
 
