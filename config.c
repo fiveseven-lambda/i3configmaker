@@ -10,7 +10,7 @@ struct bind{
 struct bind global[] = {
 	{
 		.key = MOD "+Return",
-		.command = "exec terminator"
+		.command = "exec alacritty"
 	}, {
 		.key = MOD "+Shift+space",
 		.command = "exec rofi -show run"
