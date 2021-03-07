@@ -1,0 +1,243 @@
+bar{
+	# 画面の下に表示されるバー
+	status_command i3status
+}
+# ウィンドウの枠線
+default_border pixel 1
+# ターミナルエミュレータを起動
+bindsym Mod4+Return exec alacritty
+# ランチャーを起動
+bindsym Mod4+Shift+space exec rofi -show run
+# ウィンドウを閉じる
+bindsym Mod4+Delete kill
+# フルスクリーン切り替え
+bindsym Mod4+Shift+f fullscreen toggle
+# スクリーンショット
+bindsym Mod4+Print exec gm import -window root $(date "+screenshot/%Y%m%d-%H%M%S.png")
+
+# モード切り替え
+# exit モード（ exit / restart / reload をする）
+bindsym Mod4+Shift+e mode "exit [e: exit] [r: restart] [w: reload]"
+# layout モード（ウィンドウの並べ方を変える）
+bindsym Mod4+l mode "layout [h: splith] [v: splitv] [t: tabbed] [s: stacking] [f: floating toggle]"
+# split モード（新規ウィンドウの分割向きを変える）
+bindsym Mod4+s mode "split [h: horizontal] [v: vertical]"
+# focus モード（他ウィンドウに focus する）
+bindsym Mod4+f border normal; mode "focus [h: left] [j: down] [k: up] [l: right] [p: parent] [c: child] [f: floating]"
+# move モード（ focus しているウィンドウを動かす）
+bindsym Mod4+m border normal; mode "move [h: left] [j: down] [k: up] [l: right] [c: center] [m: mouse]"
+# resize モード（ focus しているウィンドウの大きさを変える）
+bindsym Mod4+r border normal; mode "resize [h: shrink width] [j: grow height] [k: shrink height] [l: grow width]"
+# workspace モード（ワークスペースを切り替える）
+bindsym Mod4+w mode "workspace"
+
+# モード切り替えは相互に可能（ focus モードのときに Mod4+m を押すと move モードになる）
+# どのモードからも Enter で戻ってこれる
+
+mode "exit [e: exit] [r: restart] [w: reload]"{
+	bindsym Return mode "default"
+
+	# i3 を終了
+	bindsym e exec killall mozc_server; exit
+	# i3 を再起動
+	bindsym r restart
+	# config をリロード
+	bindsym w reload
+
+	bindsym Mod4+l mode "layout [h: splith] [v: splitv] [t: tabbed] [s: stacking] [f: floating toggle]"
+	bindsym Mod4+s mode "split [h: horizontal] [v: vertical]"
+	bindsym Mod4+f border normal; mode "focus [h: left] [j: down] [k: up] [l: right] [p: parent] [c: child] [f: floating]"
+	bindsym Mod4+m border normal; mode "move [h: left] [j: down] [k: up] [l: right] [c: center] [m: mouse]"
+	bindsym Mod4+r border normal; mode "resize [h: shrink width] [j: grow height] [k: shrink height] [l: grow width]"
+	bindsym Mod4+w mode "workspace"
+}
+mode "layout [h: splith] [v: splitv] [t: tabbed] [s: stacking] [f: floating toggle]"{
+	bindsym Return mode "default"
+
+	# 垂直に分割
+	bindsym h layout splith; mode "default"
+	# 水平に分割
+	bindsym v layout splitv; mode "default"
+	# タブ
+	bindsym t layout tabbed; mode "default"
+	# スタック
+	bindsym s layout stacking; mode "default"
+	# フロート（タイルじゃなくなる）
+	bindsym f floating toggle; mode "default"
+
+	bindsym Mod4+Shift+e mode "exit [e: exit] [r: restart] [w: reload]"
+	bindsym Mod4+s mode "split [h: horizontal] [v: vertical]"
+	bindsym Mod4+f border normal; mode "focus [h: left] [j: down] [k: up] [l: right] [p: parent] [c: child] [f: floating]"
+	bindsym Mod4+m border normal; mode "move [h: left] [j: down] [k: up] [l: right] [c: center] [m: mouse]"
+	bindsym Mod4+r border normal; mode "resize [h: shrink width] [j: grow height] [k: shrink height] [l: grow width]"
+	bindsym Mod4+w mode "workspace"
+}
+mode "split [h: horizontal] [v: vertical]"{
+	bindsym Return mode "default"
+
+	# 新規ウィンドウが作られるとき垂直に分割
+	bindsym h split horizontal; mode "default"
+	# 新規ウィンドウが作られるとき水平に分割
+	bindsym v split vertical; mode "default"
+
+	bindsym Mod4+Shift+e mode "exit [e: exit] [r: restart] [w: reload]"
+	bindsym Mod4+l mode "layout [h: splith] [v: splitv] [t: tabbed] [s: stacking] [f: floating toggle]"
+	bindsym Mod4+f border normal; mode "focus [h: left] [j: down] [k: up] [l: right] [p: parent] [c: child] [f: floating]"
+	bindsym Mod4+m border normal; mode "move [h: left] [j: down] [k: up] [l: right] [c: center] [m: mouse]"
+	bindsym Mod4+r border normal; mode "resize [h: shrink width] [j: grow height] [k: shrink height] [l: grow width]"
+	bindsym Mod4+w mode "workspace"
+}
+mode "focus [h: left] [j: down] [k: up] [l: right] [p: parent] [c: child] [f: floating]"{
+	bindsym Return border pixel 1; mode "default"
+
+	# 左のウィンドウにフォーカスを動かす
+	bindsym h border pixel 1; focus left; border normal
+	# 下のウィンドウにフォーカスを動かす
+	bindsym j border pixel 1; focus down; border normal
+	# 上のウィンドウにフォーカスを動かす
+	bindsym k border pixel 1; focus up; border normal
+	# 右のウィンドウにフォーカスを動かす
+	bindsym l border pixel 1; focus right; border normal
+	# 親ウィンドウにフォーカスを動かす
+	bindsym p border pixel 1; focus parent
+	# 子ウィンドウにフォーカスを動かす
+	bindsym c focus child; border normal
+	# フロートウィンドウ／タイルウィンドウの間でフォーカスを動かす
+	bindsym f border pixel 1; focus mode_toggle; border normal
+
+	bindsym Mod4+Shift+e border pixel 1; mode "exit [e: exit] [r: restart] [w: reload]"
+	bindsym Mod4+l border pixel 1; mode "layout [h: splith] [v: splitv] [t: tabbed] [s: stacking] [f: floating toggle]"
+	bindsym Mod4+s border pixel 1; mode "split [h: horizontal] [v: vertical]"
+	bindsym Mod4+m mode "move [h: left] [j: down] [k: up] [l: right] [c: center] [m: mouse]"
+	bindsym Mod4+r mode "resize [h: shrink width] [j: grow height] [k: shrink height] [l: grow width]"
+	bindsym Mod4+w border pixel 1; mode "workspace"
+}
+mode "move [h: left] [j: down] [k: up] [l: right] [c: center] [m: mouse]"{
+	bindsym Return border pixel 1; mode "default"
+
+	# ウィンドウを左に動かす
+	bindsym h move left
+	# （フロートのとき）ウィンドウを大きく左に動かす
+	bindsym Shift+h move left 50 px
+	bindsym j move down
+	bindsym Shift+j move down 50 px
+	bindsym k move up
+	bindsym Shift+k move up 50 px
+	bindsym l move right
+	bindsym Shift+l move right 50 px
+	# ウィンドウを画面中心に動かす
+	bindsym c move absolute position center
+	# ウィンドウをマウス位置に動かす
+	bindsym m move position mouse
+
+	bindsym Mod4+Shift+e border pixel 1; mode "exit [e: exit] [r: restart] [w: reload]"
+	bindsym Mod4+l border pixel 1; mode "layout [h: splith] [v: splitv] [t: tabbed] [s: stacking] [f: floating toggle]"
+	bindsym Mod4+s border pixel 1; mode "split [h: horizontal] [v: vertical]"
+	bindsym Mod4+f mode "focus [h: left] [j: down] [k: up] [l: right] [p: parent] [c: child] [f: floating]"
+	bindsym Mod4+r mode "resize [h: shrink width] [j: grow height] [k: shrink height] [l: grow width]"
+	bindsym Mod4+w border pixel 1; mode "workspace"
+}
+mode "resize [h: shrink width] [j: grow height] [k: shrink height] [l: grow width]"{
+	bindsym Return border pixel 1; mode "default"
+
+	# ウィンドウの幅を狭める
+	bindsym h resize shrink width
+	# ウィンドウの幅を大きく狭める
+	bindsym Shift+h resize shrink width 50 px
+	bindsym j resize grow height
+	bindsym Shift+j resize grow height 50 px
+	bindsym k resize shrink height
+	bindsym Shift+k resize shrink height 50 px
+	bindsym l resize grow width
+	bindsym Shift+l resize grow width 50 px
+	bindsym Mod4+Shift+e border pixel 1; mode "exit [e: exit] [r: restart] [w: reload]"
+	bindsym Mod4+l border pixel 1; mode "layout [h: splith] [v: splitv] [t: tabbed] [s: stacking] [f: floating toggle]"
+	bindsym Mod4+s border pixel 1; mode "split [h: horizontal] [v: vertical]"
+	bindsym Mod4+f mode "focus [h: left] [j: down] [k: up] [l: right] [p: parent] [c: child] [f: floating]"
+	bindsym Mod4+m mode "move [h: left] [j: down] [k: up] [l: right] [c: center] [m: mouse]"
+	bindsym Mod4+w border pixel 1; mode "workspace"
+}
+mode "workspace"{
+	bindsym Return mode "default"
+
+	# ワークスペース 0 に移動
+	bindsym 0 workspace 0; mode "default"
+	# 今 focus しているウィンドウごとワークスペース 0 に移動
+	bindsym Shift+0 move container to workspace 0; workspace 0; mode "default"
+	bindsym 1 workspace 1; mode "default"
+	bindsym Shift+1 move container to workspace 1; workspace 1; mode "default"
+	bindsym 2 workspace 2; mode "default"
+	bindsym Shift+2 move container to workspace 2; workspace 2; mode "default"
+	bindsym 3 workspace 3; mode "default"
+	bindsym Shift+3 move container to workspace 3; workspace 3; mode "default"
+	bindsym 4 workspace 4; mode "default"
+	bindsym Shift+4 move container to workspace 4; workspace 4; mode "default"
+	bindsym 5 workspace 5; mode "default"
+	bindsym Shift+5 move container to workspace 5; workspace 5; mode "default"
+	bindsym 6 workspace 6; mode "default"
+	bindsym Shift+6 move container to workspace 6; workspace 6; mode "default"
+	bindsym 7 workspace 7; mode "default"
+	bindsym Shift+7 move container to workspace 7; workspace 7; mode "default"
+	bindsym 8 workspace 8; mode "default"
+	bindsym Shift+8 move container to workspace 8; workspace 8; mode "default"
+	bindsym 9 workspace 9; mode "default"
+	bindsym Shift+9 move container to workspace 9; workspace 9; mode "default"
+	bindsym A workspace A; mode "default"
+	bindsym Shift+A move container to workspace A; workspace A; mode "default"
+	bindsym B workspace B; mode "default"
+	bindsym Shift+B move container to workspace B; workspace B; mode "default"
+	bindsym C workspace C; mode "default"
+	bindsym Shift+C move container to workspace C; workspace C; mode "default"
+	bindsym D workspace D; mode "default"
+	bindsym Shift+D move container to workspace D; workspace D; mode "default"
+	bindsym E workspace E; mode "default"
+	bindsym Shift+E move container to workspace E; workspace E; mode "default"
+	bindsym F workspace F; mode "default"
+	bindsym Shift+F move container to workspace F; workspace F; mode "default"
+	bindsym G workspace G; mode "default"
+	bindsym Shift+G move container to workspace G; workspace G; mode "default"
+	bindsym H workspace H; mode "default"
+	bindsym Shift+H move container to workspace H; workspace H; mode "default"
+	bindsym I workspace I; mode "default"
+	bindsym Shift+I move container to workspace I; workspace I; mode "default"
+	bindsym J workspace J; mode "default"
+	bindsym Shift+J move container to workspace J; workspace J; mode "default"
+	bindsym K workspace K; mode "default"
+	bindsym Shift+K move container to workspace K; workspace K; mode "default"
+	bindsym L workspace L; mode "default"
+	bindsym Shift+L move container to workspace L; workspace L; mode "default"
+	bindsym M workspace M; mode "default"
+	bindsym Shift+M move container to workspace M; workspace M; mode "default"
+	bindsym N workspace N; mode "default"
+	bindsym Shift+N move container to workspace N; workspace N; mode "default"
+	bindsym O workspace O; mode "default"
+	bindsym Shift+O move container to workspace O; workspace O; mode "default"
+	bindsym P workspace P; mode "default"
+	bindsym Shift+P move container to workspace P; workspace P; mode "default"
+	bindsym Q workspace Q; mode "default"
+	bindsym Shift+Q move container to workspace Q; workspace Q; mode "default"
+	bindsym R workspace R; mode "default"
+	bindsym Shift+R move container to workspace R; workspace R; mode "default"
+	bindsym S workspace S; mode "default"
+	bindsym Shift+S move container to workspace S; workspace S; mode "default"
+	bindsym T workspace T; mode "default"
+	bindsym Shift+T move container to workspace T; workspace T; mode "default"
+	bindsym U workspace U; mode "default"
+	bindsym Shift+U move container to workspace U; workspace U; mode "default"
+	bindsym V workspace V; mode "default"
+	bindsym Shift+V move container to workspace V; workspace V; mode "default"
+	bindsym W workspace W; mode "default"
+	bindsym Shift+W move container to workspace W; workspace W; mode "default"
+	bindsym X workspace X; mode "default"
+	bindsym Shift+X move container to workspace X; workspace X; mode "default"
+	bindsym Y workspace Y; mode "default"
+	bindsym Shift+Y move container to workspace Y; workspace Y; mode "default"
+	bindsym Z workspace Z; mode "default"
+	bindsym Shift+Z move container to workspace Z; workspace Z; mode "default"
+	bindsym Mod4+Shift+e mode "exit [e: exit] [r: restart] [w: reload]"
+	bindsym Mod4+l mode "layout [h: splith] [v: splitv] [t: tabbed] [s: stacking] [f: floating toggle]"
+	bindsym Mod4+s mode "split [h: horizontal] [v: vertical]"
+	bindsym Mod4+f border normal; mode "focus [h: left] [j: down] [k: up] [l: right] [p: parent] [c: child] [f: floating]"
+	bindsym Mod4+m border normal; mode "move [h: left] [j: down] [k: up] [l: right] [c: center] [m: mouse]"
+	bindsym Mod4+r border normal; mode "resize [h: shrink width] [j: grow height] [k: shrink height] [l: grow width]"
+}
