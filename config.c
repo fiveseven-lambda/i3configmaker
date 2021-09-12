@@ -23,6 +23,15 @@ struct bind global[] = {
 	}, {
 		.key = MOD "+Print",
 		.command = "exec gm import -window root $(date \"+screenshot/%Y%m%d-%H%M%S.png\")"
+	}, {
+		.key = "XF86AudioLowerVolume",
+		.command = "exec pulseaudio-ctl down"
+	}, {
+		.key = "XF86AudioRaiseVolume",
+		.command = "exec pulseaudio-ctl up"
+	}, {
+		.key = "XF86AudioMute",
+		.command = "exec pulseaudio-ctl mute"
 	}
 };
 
